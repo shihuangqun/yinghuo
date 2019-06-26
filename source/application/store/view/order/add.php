@@ -91,6 +91,16 @@
                                     </small>
                                 </div>
                             </div>
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">商品详情</div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label">商品详情 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <!-- 加载编辑器的容器 -->
+                                    <textarea id="container" name="goods[content]" type="text/plain"></textarea>
+                                </div>
+                            </div>
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
                                     <button type="submit" class="j-submit am-btn am-btn-secondary">提交
@@ -123,7 +133,7 @@
 
         // 富文本编辑器
         UM.getEditor('container');
-
+        //
         // 选择图片
         $('.upload-file').selectImages({
             name: 'goods[images][]'

@@ -127,6 +127,11 @@ return [
         'icon' => 'icon-aixin',
         'index' => 'guarantee/index'
     ],
+    'video' => [
+        'name' => '视频管理',
+        'icon' => '',
+        'index' => 'video/index'
+    ],
     'plugins' => [
         'name' => '应用中心',
         'icon' => 'icon-application',

@@ -208,4 +208,14 @@ class Controller extends \think\Controller
         return $this->request->post($key . '/a');
     }
 
+    public function return_msg($code,$msg='',$url=''){
+
+        $data['code'] = $code;
+        $data['msg'] = $msg;
+        $data['url'] = $url;
+
+        echo json_encode($data);
+        die;
+    }
+
 }
