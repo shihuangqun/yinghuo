@@ -132,6 +132,11 @@ return [
         'icon' => '',
         'index' => 'video/index'
     ],
+    'file' => [
+        'name' => '文件管理',
+        'icon' => '',
+        'index' => 'file/index'
+    ],
     'plugins' => [
         'name' => '应用中心',
         'icon' => 'icon-application',

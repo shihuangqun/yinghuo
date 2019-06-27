@@ -13,7 +13,6 @@ Class Video extends Validate{
 
     protected $rule = [
         'title' => 'require',
-        'product_id' => 'require',
         'video' => 'require'
     ];
 

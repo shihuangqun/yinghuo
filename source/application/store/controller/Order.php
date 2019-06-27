@@ -144,8 +144,27 @@ class Order extends Controller
 
         if(request()->isPost()){
 
-            $res = Request::instance()->param();
+//            $res = Request::instance()->param();
+            $res['pay_price'] = input('pay_price');
+            $res['order_no'] = time();
+            $res['total_price'] = $res['pay_price'];
+            $res['wxapp_id'] = 10001;
+            $res['user_id'] = 1;
+            $res['guarantee_id'] = input('guarantee_id');
+            $res['create_time'] = time();
 
+            $res_goods['goods_id'] = input('goods_id');
+            $res_goods['goods_price'] =$res['pay_price'];
+            $res_goods['line_price'] =$res['pay_price'];
+            $res_goods['total_price'] = $res['pay_price'];
+            $res_goods['total_num'] = input('num');
+            $res_goods['user_id'] = 1;
+            $res_goods['wxapp_id'] = 10001;
+            $res_goods['content'] = input('content');
+            $res_goods['goods_name'] = '';
+            $res_goods['image_id'] = '';
+            $res_goods['order_id'] = '';
+            $res_goods['create_time'] = time();
             Db::startTrans();
 
             try{

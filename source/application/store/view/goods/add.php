@@ -145,13 +145,13 @@
                             </div>
 
                             <div class="goods-spec-single">
-                                <div class="am-form-group">
-                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label">商品编码 </label>
-                                    <div class="am-u-sm-9 am-u-end">
-                                        <input type="text" class="tpl-form-input" name="goods[spec][goods_no]"
-                                               value="">
-                                    </div>
-                                </div>
+<!--                                <div class="am-form-group">-->
+<!--                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label">商品编码 </label>-->
+<!--                                    <div class="am-u-sm-9 am-u-end">-->
+<!--                                        <input type="text" class="tpl-form-input" name="goods[spec][goods_no]"-->
+<!--                                               value="">-->
+<!--                                    </div>-->
+<!--                                </div>-->
                                 <div class="am-form-group">
                                     <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品价格 </label>
                                     <div class="am-u-sm-9 am-u-end">
@@ -204,6 +204,27 @@
                                 <div class="am-u-sm-9 am-u-end">
                                     <!-- 加载编辑器的容器 -->
                                     <textarea id="container" name="goods[content]" type="text/plain"></textarea>
+                                </div>
+                            </div>
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">关联视频</div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">使用视频 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="goods[video_id]" required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择关联视频'}">
+                                        <option value=""></option>
+                                        <?php if (isset($video)): foreach($video as $item): ?>
+                                            <option value="<?= $item['id']?>"><?= $item['title']?></option>
+
+
+                                        <?php endforeach; endif;?>
+
+                                    </select>
+                                    <small class="am-margin-left-xs">
+                                        <a href="<?= url('video/add') ?>">去添加</a>
+                                    </small>
                                 </div>
                             </div>
                             <div class="widget-head am-cf">

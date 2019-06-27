@@ -30,7 +30,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品分类 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <select name="goods[category_id]" required
+                                    <select name="goods_id" required
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择商品'}">
                                         <option value=""></option>
                                         <?php if (isset($cate)): foreach($cate as $item): ?>
@@ -55,7 +55,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">数量 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"
+                                    <input type="number" class="tpl-form-input" name="num"
                                            required>
                                 </div>
                             </div>
@@ -66,17 +66,11 @@
                                            required>
                                 </div>
                             </div>
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">买家名 </label>
-                                <div class="am-u-sm-9 am-u-end">
-                                    <input type="text" class="tpl-form-input" name="goods[goods_name]"
-                                           value="" required>
-                                </div>
-                            </div>
+
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">延保服务 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <select name="goods[category_id]" required
+                                    <select name="guarantee_id" required
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
                                         <option value=""></option>
                                         <?php if (isset($guarantee)): foreach($guarantee as $item): ?>

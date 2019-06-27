@@ -1,33 +1,5 @@
 <link rel="stylesheet" href="assets/store/css/goods.css">
 <link rel="stylesheet" href="assets/store/plugins/umeditor/themes/default/css/umeditor.css">
-<style>
-    .file {
-        position: relative;
-        display: inline-block;
-        background: #3bb4f2;
-        border: 1px solid #3bb4f2;
-        border-radius: 4px;
-        padding: 4px 12px;
-        overflow: hidden;
-        color: #fff;
-        text-decoration: none;
-        text-indent: 0;
-        line-height: 20px;
-    }
-    .file input {
-        position: absolute;
-        font-size: 100px;
-        right: 0;
-        top: 0;
-        opacity: 0;
-    }
-    .file:hover {
-        background: #AADFFD;
-        border-color: #78C3F3;
-        color: #004974;
-        text-decoration: none;
-    }
-</style>
 
 <div class="row-content am-cf">
     <div class="row">
@@ -75,7 +47,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">视频 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input type="file" name="video" value="" required>
+                                    <input type="file" name="video" value="<?= $save['video']?>">
                                 </div>
 
                             </div>
@@ -188,7 +160,7 @@
             dataType: 'json',
             processData:false,
             contentType: false,
-            url: '<?= url('video/doadd')?>',
+            url: '<?= url('video/doedit')?>',
             success: function(data){
                 console.log(data);
                 if(data.code == 200){
