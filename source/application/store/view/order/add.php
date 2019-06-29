@@ -23,7 +23,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品编码 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input type="text" class="tpl-form-input" name="goods[spec][goods_no]"
+                                    <input type="text" class="tpl-form-input" name="goods_no"
                                            value="" required>
                                 </div>
                             </div>
@@ -34,7 +34,8 @@
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择商品'}">
                                         <option value=""></option>
                                         <?php if (isset($cate)): foreach($cate as $item): ?>
-                                        <option value="<?= $item['name']?>"><?= $item['name']?></option>
+                                        <option value="<?= $item['name']?>">
+                                            <?= $item['name']?></option>
                                         <?php if (!empty($item['sub'])): foreach($item['sub'] as $it): ?>
                                             <option value="<?= $it['goods_id']?>">
                                                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?= $it['goods_name']?></option>
@@ -45,13 +46,13 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">单价 </label>
-                                <div class="am-u-sm-9 am-u-end">
-                                    <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"
-                                           required>
-                                </div>
-                            </div>
+<!--                            <div class="am-form-group">-->
+<!--                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">单价 </label>-->
+<!--                                <div class="am-u-sm-9 am-u-end">-->
+<!--                                    <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"-->
+<!--                                           required>-->
+<!--                                </div>-->
+<!--                            </div>-->
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">数量 </label>
                                 <div class="am-u-sm-9 am-u-end">
@@ -62,7 +63,7 @@
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">订单金额 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input type="number" class="tpl-form-input" name="goods[spec][goods_price]"
+                                    <input type="number" class="tpl-form-input" name="pay_price"
                                            required>
                                 </div>
                             </div>
@@ -74,7 +75,7 @@
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
                                         <option value=""></option>
                                         <?php if (isset($guarantee)): foreach($guarantee as $item): ?>
-                                            <option value="<?= $item['term']?>"><?= $item['term']?>（<?= $item['price']?>）</option>
+                                            <option value="<?= $item['id']?>"><?= $item['term']?>（<?= $item['price']?>）</option>
 
 
                                         <?php endforeach; endif;?>
@@ -86,18 +87,34 @@
                                 </div>
                             </div>
                             <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">收货信息</div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">姓名 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <input type="text" class="tpl-form-input" name="name"
+                                           value="" required>
+                                </div>
+                            </div><div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">电话 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <input type="text" class="tpl-form-input" name="phone"
+                                           value="" required>
+                                </div>
+                            </div>
+                            <div class="widget-head am-cf">
                                 <div class="widget-title am-fl">商品详情</div>
                             </div>
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label">商品详情 </label>
                                 <div class="am-u-sm-9 am-u-end">
                                     <!-- 加载编辑器的容器 -->
-                                    <textarea id="container" name="goods[content]" type="text/plain"></textarea>
+                                    <textarea id="container" name="content" type="text/plain"></textarea>
                                 </div>
                             </div>
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
-                                    <button type="submit" class="j-submit am-btn am-btn-secondary">提交
+                                    <button type="button" class="j-submit am-btn am-btn-secondary" onclick="btn()">提交
                                     </button>
                                 </div>
                             </div>
@@ -186,4 +203,28 @@
         });
 
     });
+
+    function btn(){
+        $.ajax({
+            type:'post',
+            data:$('#my-form').serialize(),
+            dataType:'json',
+            url:"<?=url('order/doadd')?>",
+            success: function(data){
+                console.log(data);
+                if(data.code == 200){
+                    layer.msg(data.msg,{icon:1});
+
+                    setTimeout(function(){
+                        location.href = '<?=url('order/all_list')?>';
+                    },1500)
+                }else{
+                    layer.msg(data.msg,{icon:5});
+                }
+            },
+            error: function(){
+                console.log('错误');
+            }
+        })
+    }
 </script>

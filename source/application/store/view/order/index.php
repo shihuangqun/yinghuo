@@ -6,12 +6,20 @@
                     <div class="widget-title am-cf"><?= $title ?></div>
 
                 </div>
+                <form action="<?=url('order/daoru')?>" enctype="multipart/form-data" method="post">
+
+                    <div class="layui-upload">
+                        <button type="button" class="layui-btn layui-btn-normal" id="test8">选择文件</button>
+                        <button type="button" class="layui-btn" id="test9">开始导入到数据库</button>
+                    </div>
+                </form>
                 <div class="am-btn-group am-btn-group-xs" style="float: right;margin-right:3%;">
                     <a class="am-btn am-btn-default am-btn-success am-radius"
                        href="<?= url('order/add') ?>">
                         <span class="am-icon-plus"></span> 新增
                     </a>
                 </div>
+
                 <div class="widget-body am-fr">
                     <div class="order-list am-scrollable-horizontal am-u-sm-12 am-margin-top-xs">
                         <table width="100%" class="am-table am-table-centered
@@ -21,7 +29,8 @@
                                 <th width="30%" class="goods-detail">商品信息</th>
                                 <th width="10%">单价/数量</th>
                                 <th width="15%">实付款</th>
-                                <th>买家</th>
+<!--                                <th>买家</th>-->
+                                <th>商品编码</th>
                                 <th>交易状态</th>
                                 <th>操作</th>
                             </tr>
@@ -60,10 +69,16 @@
                                                 <p>￥<?= $order['pay_price'] ?></p>
                                                 <p class="am-link-muted">(含运费：￥<?= $order['express_price'] ?>)</p>
                                             </td>
-                                            <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
-                                                <p><?= $order['user']['nickName'] ?></p>
-                                                <p class="am-link-muted">(用户id：<?= $order['user']['user_id'] ?>)</p>
+<!--                                            <td class="am-text-middle" rowspan="--><?//= $goodsCount ?><!--">-->
+<!--                                                <p>--><?//= $order['user']['nickName'] ?><!--</p>-->
+<!--                                                <p class="am-link-muted">(用户id：--><?//= $order['user']['user_id'] ?><!--)</p>-->
+<!--                                            </td>-->
+                                            <td class="am-text-middle goods_no" rowspan="<?= $goodsCount ?>">
+                                                <p><?= $order['goods_no'] ?></p>
+                                                <input type="hidden" id="id" value="<?= $order['order_id']?>">
+<!--                                                <p class="am-link-muted">(含运费：￥--><?//= $order['express_price'] ?><!--)</p>-->
                                             </td>
+
                                             <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
                                                 <p>付款状态：
                                                     <span class="am-badge
@@ -117,4 +132,47 @@
         </div>
     </div>
 </div>
+
+<script>
+
+    $('.goods_no').bind("dblclick",function () {
+        var id = $(this).find('#id').val();
+        var oldval = $(this).find('p').html();
+
+        var input = "<input type='text' id='save' value="+oldval+">";
+
+        $(this).find('p').html(input);
+        $('#save').val('').focus().val(oldval);
+
+        $('#save').blur(function(){
+            var obj = $(this);
+            var val = $(this).val();
+
+            $.ajax({
+                type:'post',
+                data:{id:id,val:val},
+                dataType:'json',
+                url:'<?=url('order/code_save')?>',
+                success: function(data){
+                    console.log(data);
+                    if(data.code == 200){
+                        obj.parent('p').html(val);
+                        layer.msg(data.msg,{icon:1});
+
+                    }else{
+                        obj.parent('p').html(oldval);
+                        layer.msg(data.msg,{icon:5});
+
+                    }
+                },
+                error: function(){
+                    console.log('服务器故障');
+                }
+            })
+
+
+        });
+    })
+
+</script>
 

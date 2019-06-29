@@ -125,7 +125,7 @@
                                             </p>
                                         </div>
                                     </td>
-                                    <td><?= $goods['goods_no'] ?: '--' ?></td>
+                                    <td><?= $detail['goods_no'] ?: '--' ?></td>
                                     <td><?= $goods['goods_weight'] ?: '--' ?></td>
                                     <td>￥<?= $goods['goods_price'] ?></td>
                                     <td>×<?= $goods['total_num'] ?></td>

@@ -75,6 +75,11 @@ return [
         'icon' => 'icon-user',
         'index' => 'user/index',
     ],
+    'admin' => [
+        'name' => '管理员管理',
+        'icon' => 'icon-user',
+        'index' => 'admin/index',
+    ],
 //    'marketing' => [
 //        'name' => '营销管理',
 //        'icon' => 'icon-marketing',

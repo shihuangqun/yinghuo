@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="assets/store/css/amazeui.min.css"/>
     <link rel="stylesheet" href="assets/store/css/app.css"/>
     <link rel="stylesheet" href="//at.alicdn.com/t/font_783249_t6knt0guzo.css">
-
+    <link rel="stylesheet" href="assets/UI/layui/layui-v2.4.5/layui/css/layui.css">
     <script src="assets/store/js/jquery.min.js"></script>
     <script src="//at.alicdn.com/t/font_783249_e5yrsf08rap.js"></script>
     <script>
@@ -123,7 +123,9 @@
 
 </div>
 
-<script src="assets/layer/layer.js"></script>
+
+<!--<script src="assets/layer/layer.js"></script>-->
+<script src="assets/UI/layui/layui-v2.4.5/layui/layui.js"></script>
 <script src="assets/store/js/jquery.form.min.js"></script>
 <script src="assets/store/js/amazeui.min.js"></script>
 <script src="assets/store/js/webuploader.html5only.js"></script>
@@ -131,5 +133,34 @@
 <script src="assets/store/js/app.js"></script>
 <script src="assets/store/js/file.library.js"></script>
 </body>
+<script>
 
+    layui.use('upload', function(){
+        var $ = layui.jquery
+            ,upload = layui.upload;
+
+        //选完文件后不自动上传
+        upload.render({
+            elem: '#test8'
+            ,exts: 'xlsx' //只允许上传压缩文件
+            ,url: "<?=url('order/daoru')?>"
+            ,auto: false
+            //,multiple: true
+            ,bindAction: '#test9'
+            ,done: function(res){
+                console.log(res)
+                if(res.code == 1) {
+                    layer.msg(res.msg, {'icon': 1});
+                    setTimeout(function () {
+                        parent.window.location.reload();
+                    }, 1000);
+                } else {
+                    layer.msg(res.msg);
+                }
+
+            }
+        });
+
+    });
+</script>
 </html>
