@@ -35,7 +35,16 @@ return [
                     'goods.category/add',
                     'goods.category/edit',
                 ],
-            ]
+            ],
+//            [
+//                'name' => '配件分类',
+//                'index' => 'goods.parts/index',
+//                'uris' => [
+//                    'goods.parts/index',
+//                    'goods.parts/add',
+//                    'goods.parts/edit',
+//                ],
+//            ]
         ],
     ],
     'order' => [
@@ -136,6 +145,11 @@ return [
         'name' => '视频管理',
         'icon' => '',
         'index' => 'video/index'
+    ],
+    'finance' => [
+        'name' => '财务管理',
+        'icon' => '',
+        'index' => 'finance/index'
     ],
     'file' => [
         'name' => '文件管理',

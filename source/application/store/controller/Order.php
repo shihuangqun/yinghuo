@@ -91,6 +91,8 @@ class Order extends Controller
     {
         $model = new OrderModel;
         $list = $model->getList($filter);
+//        dump($list);exit;
+//        $lists = Db::name('order')->;
         return $this->fetch('index', compact('title','list'));
     }
 
@@ -123,21 +125,32 @@ class Order extends Controller
     }
     public function add(){
 
-        $goods = Db::name('category')->where('parent_id',0)->select();
+        $goods = Db::name('category')->where('parent_id',0)->where('category_id','neq',3)->select();
+        $parts = Db::name('category')->where('parent_id',0)->where('category_id','eq',3)->select();
 
         $cates = [];
         $cate = [];
         foreach($goods as $k => $v){
-            $v['sub'] = Db::name('goods')
-                    ->where('category_id',$v['category_id'])
-                    ->select();
-            $cate[] = $v;
-//            $v['sub'][] = Db::name('category')
-//                    ->where('parent_id',$v['category_id'])
+//            $v['sub'] = Db::name('goods')
+//                    ->where('category_id',$v['category_id'])
 //                    ->select();
+//            $cate[] = $v;
+            $v['sub'] = Db::name('category')
+                    ->where('parent_id',$v['category_id'])
+                    ->select();
 //
 //
-//            $cates[] = $v;
+            $cate[] = $v;
+
+        }
+        foreach($parts as $key => $val){
+
+            $val['sub'] = Db::name('category')
+                ->where('parent_id',$val['category_id'])
+                ->select();
+//
+//
+            $cates[] = $val;
 
         }
 
@@ -158,11 +171,12 @@ class Order extends Controller
 //            }
 //            $cates['sub'] = $va['sub'];
 //        }
-//        dump($cates);
+//        dump($cate);
         $guarantee = Db::name('guarantee')->select();
 
         $this->assign([
             'cate' => $cate,
+            'cates' => $cates,
             'guarantee' => $guarantee
         ]);
         return $this->fetch();
@@ -184,7 +198,7 @@ class Order extends Controller
 
             if($order_id){
                 $res_goods['goods_id'] = input('goods_id');
-                $image = Db::name('goods_image')->find($res_goods['goods_id']);
+                $image = Db::name('goods_image')->where('goods_id',$res_goods['goods_id'])->find();
                 $res_goods['goods_price'] =$res['pay_price'];
                 $res_goods['line_price'] =$res['pay_price'];
                 $res_goods['total_price'] = $res['pay_price'];
@@ -196,7 +210,7 @@ class Order extends Controller
                 $res_goods['image_id'] = $image['image_id'];
                 $res_goods['order_id'] = $order_id;
                 $res_goods['create_time'] = time();
-
+//                dump($image);
                 $address['name'] = input('name');
                 $address['phone'] = input('phone');
                 $address['province_id'] = '1964';
@@ -357,5 +371,30 @@ class Order extends Controller
 
         }
         return $this->fetch();
+    }
+    public function goods(){
+
+        $id = input('id');
+
+        $data = Db::name('goods')
+                ->alias('g')
+                ->where('category_id',$id)
+                ->join('goods_image i','i.goods_id = g.goods_id')
+                ->join('upload_file u','u.file_id = i.image_id')
+                ->select();
+//        dump($data);
+        return json_encode($data);
+    }
+    public function parts(){
+        $id = input('id');
+
+        $data = Db::name('goods')
+            ->alias('g')
+            ->where('category_id',$id)
+            ->join('goods_image i','i.goods_id = g.goods_id')
+            ->join('upload_file u','u.file_id = i.image_id')
+            ->select();
+//        dump($data);
+        return json_encode($data);
     }
 }

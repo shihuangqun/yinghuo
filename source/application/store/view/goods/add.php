@@ -36,7 +36,7 @@
                                         <?php endforeach; endif; ?>
                                     </select>
                                     <small class="am-margin-left-xs">
-                                        <a href="<?= url('goods.category/add') ?>">去添加</a>
+                                        <a href="<?= url('goods.parts/add') ?>">去添加</a>
                                     </small>
                                 </div>
                             </div>

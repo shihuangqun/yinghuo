@@ -1,5 +1,8 @@
 <link rel="stylesheet" href="assets/store/css/goods.css">
 <link rel="stylesheet" href="assets/store/plugins/umeditor/themes/default/css/umeditor.css">
+<link type="text/css" href="assets/store/css/base.css" rel="stylesheet" />
+
+
 <style>
 
 </style>
@@ -28,23 +31,86 @@
                                 </div>
                             </div>
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品分类 </label>
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">主产品 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <select name="goods_id" required
-                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择商品'}">
+                                    <select required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择主产品'}" id="goods">
                                         <option value=""></option>
                                         <?php if (isset($cate)): foreach($cate as $item): ?>
-                                        <option value="<?= $item['name']?>">
+                                        <option value="<?= $item['name']?>" disabled="disabled">
                                             <?= $item['name']?></option>
                                         <?php if (!empty($item['sub'])): foreach($item['sub'] as $it): ?>
-                                            <option value="<?= $it['goods_id']?>">
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?= $it['goods_name']?></option>
+                                            <option value="<?= $it['category_id']?>">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?= $it['name']?></option>
+                                            <?php endforeach; endif;?>
+
+                                        <?php endforeach; endif;?>
+
+                                    </select>
+                                    <label class=" am-form-label form-require">配件 </label>
+                                    <select required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择配件'}" id="parts">
+                                        <option value=""></option>
+                                        <?php if (isset($cates)): foreach($cates as $item): ?>
+                                            <option value="<?= $item['name']?>" disabled="disabled">
+                                                <?= $item['name']?></option>
+                                            <?php if (!empty($item['sub'])): foreach($item['sub'] as $it): ?>
+                                                <option value="<?= $it['category_id']?>">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?= $it['name']?></option>
                                             <?php endforeach; endif;?>
 
                                         <?php endforeach; endif;?>
 
                                     </select>
                                 </div>
+                                <input type="hidden" name="goods_id" id="goods_id" value="">
+                                <input type="hidden" name="parts_id[]" id="parts_id" value="">
+                            </div>
+
+                            <div class="iteminfo_buying" style="display: none">
+
+                                <!--规格属性-->
+
+                                <div class="sys_item_spec" style="margin-left:10%">
+                                    <dl class="clearfix iteminfo_parameter sys_item_specpara" data-sid="1">
+
+                                        <dt>主产品</dt>
+
+                                        <dd>
+
+                                            <ul class="sys_spec_img product">
+
+                                            </ul>
+
+
+                                        </dd>
+
+
+                                    </dl>
+
+
+                                       <dl class="clearfix iteminfo_parameter sys_item_specpara" data-sid="1">
+
+                                           <dt>配件</dt>
+
+                                           <dd>
+
+                                               <ul class="sys_spec_img parts parts" style="display: none">
+
+                                               </ul>
+
+
+                                           </dd>
+
+
+                                       </dl>
+
+
+
+                                </div>
+
+                                <!--规格属性-->
+
                             </div>
 <!--                            <div class="am-form-group">-->
 <!--                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">单价 </label>-->
@@ -142,6 +208,7 @@
 <script>
     $(function () {
 
+
         // 富文本编辑器
         UM.getEditor('container');
         //
@@ -227,4 +294,221 @@
             }
         })
     }
+    $('#goods').change(function(){
+        id = $('#goods option:selected') .val();//选中的值
+        // console.log(select);
+
+        $.ajax({
+            type:'post',
+            data:{id:id},
+            dataType:'json',
+            url:"<?=url('order/goods')?>",
+            success: function(data){
+                // console.log(data);
+                $('.iteminfo_buying').css('display','block')
+
+                json = eval(data);
+                var html ='';
+                $.each(json,function(index,item){
+                    html += `<li data-aid="3" data-id="${json[index].goods_id}" ><a href="javascript:;" title="白色"><img src="uploads/${json[index].file_name}" alt="白色" /></a><i></i></li>`;
+
+                    $('.product').html(html);
+
+
+                })
+
+            },
+            error: function(){
+                console.log('服务器错误');
+            }
+        })
+    });
+    $('#parts').change(function(){
+        id = $('#parts option:selected') .val();//选中的值
+        // console.log(id);
+
+        $.ajax({
+            type:'post',
+            data:{id:id},
+            dataType:'json',
+            url:"<?=url('order/goods')?>",
+            success: function(data){
+                // console.log(data);
+                $('.parts').css('display','block')
+
+                json = eval(data);
+                var html ='';
+                $.each(json,function(index,item){
+                    html += `<li data-aid="3" data-id="${json[index].goods_id}"><a href="javascript:;" title="白色"><img src="uploads/${json[index].file_name}" alt="白色" /></a><i></i></li>`;
+
+                    $('.parts').html(html);
+
+
+                })
+
+            },
+            error: function(){
+                console.log('服务器错误');
+            }
+        })
+    });
+
+    $(document).on("click",'.product li',function(){
+        // console.log($(this))
+        var i=$(this);
+        if(!!$(this).hasClass("selected")){
+
+            $(this).removeClass("selected");
+
+            i.removeAttr("data-attrval");
+
+        }else{
+
+            $(this).addClass("selected").siblings("li").removeClass("selected");
+            goods_id = $(this).attr('data-id');
+            $('#parts_id').attr('value',goods_id);
+
+            i.attr("data-attrval",$(this).attr("data-aid"))
+
+        }
+    })
+    $(document).on("click",'.parts li',function(){
+        // console.log($(this))
+        var i=$(this);
+        if(!!$(this).hasClass("selected")){
+
+            $(this).removeClass("selected");
+
+            i.removeAttr("data-attrval");
+
+        }else{
+
+            // $(this).addClass("selected").siblings("li").removeClass("selected");
+            $(this).addClass("selected");
+
+            id = $('#parts_id').val();
+
+            goods_id = $(this).attr('data-id');
+
+            if($.trim(id) != ''){
+                goods_id = id+','+$(this).attr('data-id');
+
+            }
+
+            $('#parts_id').attr('value',goods_id);
+
+            i.attr("data-attrval",$(this).attr("data-aid"))
+
+        }
+    })
+</script>
+<script>
+    //价格json
+
+    var sys_item={
+
+        "mktprice":"13.00",
+
+        "price":"6.80",
+
+        "sys_attrprice":{"3_13":{"price":"6.80","mktprice":"13.00"},"3_14":{"price":"7.80","mktprice":"14.00"},"3_16":{"price":"8.80","mktprice":"15.00"},"3_17":{"price":"9.80","mktprice":"16.00"},"4_13":{"price":"6.80","mktprice":"13.00"},"4_14":{"price":"7.80","mktprice":"14.00"},"4_16":{"price":"8.80","mktprice":"15.00"},"4_17":{"price":"9.80","mktprice":"16.00"},"8_13":{"price":"6.80","mktprice":"13.00"},"8_14":{"price":"7.80","mktprice":"1400"},"8_16":{"price":"8.80","mktprice":"15.00"},"8_17":{"price":"9.80","mktprice":"16.00"},"9_13":{"price":"6.80","mktprice":"13.00"},"9_14":{"price":"7.80","mktprice":"14.00"},"9_16":{"price":"8.80","mktprice":"15.00"},"9_17":{"price":"9.80","mktprice":"16.00"},"10_13":{"price":"6.80","mktprice":"13.00"},"10_14":{"price":"7.80","mktprice":"14.00"},"10_16":{"price":"8.80","mktprice":"15.00"},"10_17":{"price":"9.80","mktprice":"16.00"},"12_13":{"price":"6.80","mktprice":"13.00"},"12_14":{"price":"7.80","mktprice":"14.00"},"12_16":{"price":"8.80","mktprice":"15.00"},"12_17":{"price":"9.80","mktprice":"16.00"}}};
+
+
+
+
+
+    //商品规格选择
+
+    $(function(){
+
+        $(".sys_item_spec .sys_item_specpara").each(function(){
+
+            var i=$(this);
+
+            var p=i.find("ul>li");
+
+            p.click(function(){
+
+                if(!!$(this).hasClass("selected")){
+
+                    $(this).removeClass("selected");
+
+                    i.removeAttr("data-attrval");
+
+                }else{
+
+                    $(this).addClass("selected").siblings("li").removeClass("selected");
+
+                    i.attr("data-attrval",$(this).attr("data-aid"))
+
+                }
+
+                getattrprice() //输出价格
+
+            })
+
+        })
+
+
+
+        //获取对应属性的价格
+
+        function getattrprice(){
+
+            var defaultstats=true;
+
+            var _val='';
+
+            var _resp={
+
+                mktprice:".sys_item_mktprice",
+
+                price:".sys_item_price"
+
+            }  //输出对应的class
+
+            $(".sys_item_spec .sys_item_specpara").each(function(){
+
+                var i=$(this);
+
+                var v=i.attr("data-attrval");
+
+                if(!v){
+
+                    defaultstats=false;
+
+                }else{
+
+                    _val+=_val!=""?"_":"";
+
+                    _val+=v;
+
+                }
+
+            })
+
+            if(!!defaultstats){
+
+                _mktprice=sys_item['sys_attrprice'][_val]['mktprice'];
+
+                _price=sys_item['sys_attrprice'][_val]['price'];
+
+            }else{
+
+                _mktprice=sys_item['mktprice'];
+
+                _price=sys_item['price'];
+
+            }
+
+            //输出价格
+
+            $(_resp.mktprice).text(_mktprice);  ///其中的math.round为截取小数点位数
+
+            $(_resp.price).text(_price);
+
+        }
+
+    })
+
 </script>
