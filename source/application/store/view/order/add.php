@@ -64,7 +64,7 @@
                                     </select>
                                 </div>
                                 <input type="hidden" name="goods_id" id="goods_id" value="">
-                                <input type="hidden" name="parts_id[]" id="parts_id" value="">
+                                <input type="hidden" name="parts_id" id="parts_id" value="">
                             </div>
 
                             <div class="iteminfo_buying" style="display: none">
@@ -366,7 +366,7 @@
 
             $(this).addClass("selected").siblings("li").removeClass("selected");
             goods_id = $(this).attr('data-id');
-            $('#parts_id').attr('value',goods_id);
+            $('#goods_id').attr('value',goods_id);
 
             i.attr("data-attrval",$(this).attr("data-aid"))
 
@@ -396,6 +396,7 @@
             }
 
             $('#parts_id').attr('value',goods_id);
+            console.log($('#parts_id').val());
 
             i.attr("data-attrval",$(this).attr("data-aid"))
 

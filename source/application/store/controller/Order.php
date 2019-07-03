@@ -92,7 +92,23 @@ class Order extends Controller
         $model = new OrderModel;
         $list = $model->getList($filter);
 //        dump($list);exit;
-//        $lists = Db::name('order')->;
+        $lists = Db::name('order')
+                ->alias('o')
+                ->join('order_address oa','oa.order_id = o.order_id')
+                ->join('order_goods og','og.order_id = o.order_id')
+                ->join('goods_image gi','gi.goods_id = og.goods_id')
+                ->join('upload_file uf','uf.file_id = gi.image_id')
+                ->select();
+
+        foreach($lists as $k=>$v){
+
+            $v['sub'] = Db::name('goods')->where('goods_id','in',$v['parts_id'])->select();
+//            dump($v);
+        }
+
+//        dump($lists);
+//        exit;
+
         return $this->fetch('index', compact('title','list'));
     }
 
@@ -198,6 +214,7 @@ class Order extends Controller
 
             if($order_id){
                 $res_goods['goods_id'] = input('goods_id');
+                $res_goods['parts_id'] = input('parts_id');
                 $image = Db::name('goods_image')->where('goods_id',$res_goods['goods_id'])->find();
                 $res_goods['goods_price'] =$res['pay_price'];
                 $res_goods['line_price'] =$res['pay_price'];
@@ -210,7 +227,7 @@ class Order extends Controller
                 $res_goods['image_id'] = $image['image_id'];
                 $res_goods['order_id'] = $order_id;
                 $res_goods['create_time'] = time();
-//                dump($image);
+//                dump($res_goods);
                 $address['name'] = input('name');
                 $address['phone'] = input('phone');
                 $address['province_id'] = '1964';
