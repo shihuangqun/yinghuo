@@ -31,4 +31,5 @@ class Index extends Controller
         return $this->renderSuccess(compact('userInfo', 'orderCount'));
     }
 
+
 }

@@ -6,6 +6,7 @@ use app\store\model\Order as OrderModel;
 use think\Db;
 use think\Request;
 use think\Loader;
+use think\Validate;
 /**
  * 订单管理
  * Class Order
@@ -91,25 +92,22 @@ class Order extends Controller
     {
         $model = new OrderModel;
         $list = $model->getList($filter);
-//        dump($list);exit;
-        $lists = Db::name('order')
-                ->alias('o')
-                ->join('order_address oa','oa.order_id = o.order_id')
-                ->join('order_goods og','og.order_id = o.order_id')
-                ->join('goods_image gi','gi.goods_id = og.goods_id')
-                ->join('upload_file uf','uf.file_id = gi.image_id')
-                ->select();
+//        $listData = Db::name('order')
+//                ->alias('o')
+//                ->order('o.create_time','desc')
+//                ->join('order_address oa','oa.order_id = o.order_id')
+//                ->join('order_goods og','og.order_id = o.order_id')
+//                ->join('goods_image gi','gi.goods_id = og.goods_id')
+//                ->join('upload_file uf','uf.file_id = gi.image_id')
+//                ->select();
 
-        foreach($lists as $k=>$v){
-
-            $v['sub'] = Db::name('goods')->where('goods_id','in',$v['parts_id'])->select();
-//            dump($v);
-        }
-
+//        foreach($list as $k=>$v){
+//
+//            $v['sub'] = Db::name('goods')->where('goods_id','in',$v['parts_id'])->select();
+//            $list[] = $v;
+//        }
 //        dump($lists);
-//        exit;
-
-        return $this->fetch('index', compact('title','list'));
+        return $this->fetch('index', compact('title','list','lists'));
     }
 
     /**
@@ -201,47 +199,58 @@ class Order extends Controller
 
         if(request()->isPost()){
 
-            $res['pay_price'] = input('pay_price');
+            $guarantee = input('guarantee_id');
+            $str = explode('-',$guarantee);
+            $res['sale_time'] = input('sale_time');
+            $res['guarantee_start_time'] = input('guarantee_start_time');
+            $res['guarantee_end_time'] = input('guarantee_end_time');
             $res['order_no'] = date('Ymd').rand(10000000,99999999);
-            $res['total_price'] = $res['pay_price'];
             $res['wxapp_id'] = 10001;
             $res['user_id'] = 1;
-            $res['guarantee_id'] = input('guarantee_id');
+            $res['guarantee_id'] = $str[0];
+            $res['pay_price'] = input('pay_price')+$str[1];
+            $res['total_price'] = $res['pay_price'];
             $res['goods_no'] = input('goods_no');
             $res['create_time'] = time();
 //            dump($res);exit;
             $order_id = Db::name('order')->insertGetId($res);
 
             if($order_id){
-                $res_goods['goods_id'] = input('goods_id');
-                $res_goods['parts_id'] = input('parts_id');
-                $image = Db::name('goods_image')->where('goods_id',$res_goods['goods_id'])->find();
-                $res_goods['goods_price'] =$res['pay_price'];
-                $res_goods['line_price'] =$res['pay_price'];
-                $res_goods['total_price'] = $res['pay_price'];
-                $res_goods['total_num'] = input('num');
-                $res_goods['user_id'] = $res['user_id'];
-                $res_goods['wxapp_id'] = $res['wxapp_id'];
-                $res_goods['content'] = input('content');
-                $res_goods['goods_name'] = '6666';
-                $res_goods['image_id'] = $image['image_id'];
-                $res_goods['order_id'] = $order_id;
-                $res_goods['create_time'] = time();
-//                dump($res_goods);
-                $address['name'] = input('name');
-                $address['phone'] = input('phone');
-                $address['province_id'] = '1964';
-                $address['city_id'] = '1988';
-                $address['region_id'] = '1993';
-                $address['detail'] = '1111';
-                $address['order_id'] = $order_id;
-                $address['user_id'] = $res['user_id'];
-                $address['wxapp_id'] = $res['wxapp_id'];
-                $address['create_time'] = time();
+                $goods_id = input('goods_id');
+//                $res_goods['parts_id'] = input('parts_id');
+                $str = explode(',',$goods_id);
 
                 Db::startTrans();
                 try{
-                    $order_goods = Db::name('order_goods')->insert($res_goods);
+                    foreach($str as $v){
+                        $res_goods['goods_id'] = $v;
+                        $image = Db::name('goods_image')->where('goods_id',$res_goods['goods_id'])->find();
+                        $res_goods['goods_price'] =$res['pay_price'];
+                        $res_goods['line_price'] =$res['pay_price'];
+                        $res_goods['total_price'] = $res['pay_price'];
+                        $res_goods['total_num'] = input('num');
+                        $res_goods['user_id'] = $res['user_id'];
+                        $res_goods['wxapp_id'] = $res['wxapp_id'];
+                        $res_goods['content'] = input('content');
+                        $res_goods['goods_name'] = '6666';
+                        $res_goods['image_id'] = $image['image_id'];
+                        $res_goods['order_id'] = $order_id;
+                        $res_goods['create_time'] = time();
+
+                        $order_goods = Db::name('order_goods')->insert($res_goods);
+
+                    }
+                    $address['name'] = input('name');
+                    $address['phone'] = input('phone');
+                    $address['province_id'] = '1964';
+                    $address['city_id'] = '1988';
+                    $address['region_id'] = '1993';
+                    $address['detail'] = '1111';
+                    $address['order_id'] = $order_id;
+                    $address['user_id'] = $res['user_id'];
+                    $address['wxapp_id'] = $res['wxapp_id'];
+                    $address['create_time'] = time();
+
                     $address = Db::name('order_address')->insert($address);
 
                     Db::commit();
@@ -269,7 +278,14 @@ class Order extends Controller
 
             $res['order_id'] = input('id');
             $res['goods_no'] = input('val');
+            $rules = [
+                'goods_no|商品编码'  => 'require|unique:order',
+            ];
+            $validate = new Validate($rules);
 
+            if(!$validate->check($res)){
+                return $this->return_msg(400,$validate->getError());
+            }
             $data = Db::name('order')->update($res);
 
             if($data !== false){
@@ -326,44 +342,71 @@ class Order extends Controller
                 //往数据库添加数据
                 //dump($data);
                 $aa = Db('order')->insertAll($data);
-                if($aa){
-                    $testres = Db::name('order')->getLastInsID();
-                    $arr = [];
-                    for ($i=0; $i<3; $i++) {
-                        $arr[] = (int)$testres++;
+
+                    if($aa){
+                        $testres = Db::name('order')->getLastInsID();
+                        $arr = [];
+                        for ($i=0; $i<3; $i++) {
+                            $arr[] = (int)$testres++;
+                        }
+
+                        $b=0;
+                        for($i=2;$i<=$highestRow;$i++){
+
+//                            $goods_id = $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
+//
+//                            $str = explode(',',$goods_id);
+                            $res_goods[$b]['goods_id'] = $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
+                            $image = Db::name('goods_image')->where('goods_id',$res_goods[$b]['goods_id'])->find();
+                            $res_goods[$b]['goods_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
+                            $res_goods[$b]['line_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
+                            $res_goods[$b]['total_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
+                            $res_goods[$b]['total_num'] = $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
+                            $res_goods[$b]['content'] = $objPHPExcel->getActiveSheet()->getCell("F".$i)->getValue();
+                            $res_goods[$b]['goods_name'] = 666;
+                            $res_goods[$b]['user_id'] = 1;
+                            $res_goods[$b]['wxapp_id'] = 10001;
+                            $res_goods[$b]['image_id'] = $image['image_id'];
+                            $res_goods[$b]['order_id'] = $arr[$b];
+                            $res_goods[$b]['create_time'] = time();
+
+//                           if(count($str) > 1){
+////                               $res_goods = [];
+//                               foreach($str as $v){
+//                                   $res_goodss[$b]['goods_id'] = $v;
+//                                   $image = Db::name('goods_image')->where('goods_id',$res_goods[$b]['goods_id'])->find();
+//                                   $res_goodss[$b]['goods_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
+//                                   $res_goodss[$b]['line_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
+//                                   $res_goodss[$b]['total_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
+//                                   $res_goodss[$b]['total_num'] = $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
+//                                   $res_goodss[$b]['content'] = $objPHPExcel->getActiveSheet()->getCell("F".$i)->getValue();
+//                                   $res_goodss[$b]['goods_name'] = 666;
+//                                   $res_goodss[$b]['user_id'] = 1;
+//                                   $res_goodss[$b]['wxapp_id'] = 10001;
+//                                   $res_goodss[$b]['image_id'] = $image['image_id'];
+//                                   $res_goodss[$b]['order_id'] = $arr[$b];
+//                                   $res_goodss[$b]['create_time'] = time();
+//
+////                                   $res_goods[$b][] = $res_goodss;
+//                                   dump($res_goodss);
+//                               }
+//                           }
+
+                            $address[$b]['name'] = $objPHPExcel->getActiveSheet()->getCell("G".$i)->getValue();
+                            $address[$b]['phone'] = $objPHPExcel->getActiveSheet()->getCell("H".$i)->getValue();
+                            $address[$b]['province_id'] = '1964';
+                            $address[$b]['city_id'] = '1988';
+                            $address[$b]['region_id'] = '1993';
+                            $address[$b]['detail'] = '1111';
+                            $address[$b]['order_id'] = $arr[$b];
+                            $address[$b]['user_id'] = 1;
+                            $address[$b]['wxapp_id'] = 10001;
+                            $address[$b]['create_time'] = time();
+
+                            $b++;
+                        }
                     }
 
-                    $b=0;
-                    for($i=2;$i<=$highestRow;$i++){
-
-                        $res_goods[$b]['goods_id'] = $objPHPExcel->getActiveSheet()->getCell("D".$i)->getValue();
-                        $image = Db::name('goods_image')->where('goods_id',$res_goods[$b]['goods_id'])->find();
-                        $res_goods[$b]['goods_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
-                        $res_goods[$b]['line_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
-                        $res_goods[$b]['total_price'] = $objPHPExcel->getActiveSheet()->getCell("A".$i)->getValue();
-                        $res_goods[$b]['total_num'] = $objPHPExcel->getActiveSheet()->getCell("E".$i)->getValue();
-                        $res_goods[$b]['content'] = $objPHPExcel->getActiveSheet()->getCell("F".$i)->getValue();
-                        $res_goods[$b]['goods_name'] = 666;
-                        $res_goods[$b]['user_id'] = 1;
-                        $res_goods[$b]['wxapp_id'] = 10001;
-                        $res_goods[$b]['image_id'] = $image['image_id'];
-                        $res_goods[$b]['order_id'] = $arr[$b];
-                        $res_goods[$b]['create_time'] = time();
-
-                        $address[$b]['name'] = $objPHPExcel->getActiveSheet()->getCell("G".$i)->getValue();
-                        $address[$b]['phone'] = $objPHPExcel->getActiveSheet()->getCell("H".$i)->getValue();
-                        $address[$b]['province_id'] = '1964';
-                        $address[$b]['city_id'] = '1988';
-                        $address[$b]['region_id'] = '1993';
-                        $address[$b]['detail'] = '1111';
-                        $address[$b]['order_id'] = $arr[$b];
-                        $address[$b]['user_id'] = 1;
-                        $address[$b]['wxapp_id'] = 10001;
-                        $address[$b]['create_time'] = time();
-
-                        $b++;
-                    }
-                }
                 Db::startTrans();
                 try{
                     $res_goods = Db::name('order_goods')->insertAll($res_goods);

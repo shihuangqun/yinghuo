@@ -29,5 +29,4 @@ class Index extends Controller
         $best = $model->getBestList();
         return $this->renderSuccess(compact('items', 'newest', 'best'));
     }
-
 }

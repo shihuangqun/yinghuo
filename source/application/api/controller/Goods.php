@@ -4,7 +4,7 @@ namespace app\api\controller;
 
 use app\api\model\Goods as GoodsModel;
 use app\api\model\Cart as CartModel;
-
+use think\Db;
 /**
  * 商品控制器
  * Class Goods
@@ -49,6 +49,33 @@ class Goods extends Controller
 //        // 购物车商品总数量
 //        $cart_total_num = (new CartModel($user['user_id']))->getTotalNum();
         return $this->renderSuccess(compact('detail', /*'cart_total_num',*/ 'specData'));
+    }
+
+    public function getThis(){
+
+        $id = input('goods_id');
+
+        $info = Db::name('video')->where('product_id',$id)->find();
+
+        if($info){
+            return $this->return_msg(200,'success',$info);
+        }else{
+            return $this->return_msg(400,'暂无数据');
+        }
+    }
+
+    public function getAll(){
+
+        $data = Db::name('video')->select();
+
+        return $this->return_msg(200,'success',$data);
+    }
+
+    public function getAllManual(){
+
+        $data = Db::name('file')->select();
+
+        return $this->return_msg(200,'success',$data);
     }
 
 }

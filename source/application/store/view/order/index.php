@@ -60,6 +60,7 @@
                                                 </p>
                                             </div>
                                         </td>
+
                                         <td class="am-text-middle">
                                             <p>￥<?= $goods['goods_price'] ?></p>
                                             <p>×<?= $goods['total_num'] ?></p>

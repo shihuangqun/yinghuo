@@ -97,7 +97,7 @@ Class File extends Controller{
         $file = request()->file('file');
 
         if($file){
-            $info = $file->move(ROOT_PATH.'../web'.DS.'uploads');
+            $info = $file->validate(['ext' => 'pdf','size' => 20000000])->move(ROOT_PATH.'../web'.DS.'uploads');
 
             if($info){
                 return DS.'uploads'.DS.$info->getSaveName();

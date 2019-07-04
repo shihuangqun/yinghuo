@@ -6,7 +6,7 @@ use app\api\model\Order as OrderModel;
 use app\api\model\Wxapp as WxappModel;
 use app\api\model\Cart as CartModel;
 use app\common\library\wechat\WxPay;
-
+use think\Db;
 /**
  * 订单控制器
  * Class Order
@@ -110,6 +110,23 @@ class Order extends Controller
         $wxConfig = WxappModel::getWxappCache();
         $WxPay = new WxPay($wxConfig);
         return $WxPay->unifiedorder($order_no, $open_id, $pay_price);
+    }
+
+    public function getList(){
+
+        $userid = input('userid');
+
+        $data = Db::name('order')
+                ->alias('o')
+                ->order('o.create_time','desc')
+                ->where('o.user_id',$userid)
+                ->join('order_address oa','oa.order_id = o.order_id')
+                ->join('order_goods og','og.order_id = o.order_id')
+                ->join('goods_image gi','gi.goods_id = og.goods_id')
+                ->join('upload_file uf','uf.file_id = gi.image_id')
+                ->select();
+
+        return $this->return_msg(200,'success',$data);
     }
 
 }

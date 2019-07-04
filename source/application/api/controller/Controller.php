@@ -36,10 +36,10 @@ class Controller extends ThinkController
      */
     private function getWxappId()
     {
-        if (!$wxapp_id = $this->request->param('wxapp_id')) {
-            throw new BaseException(['msg' => '缺少必要的参数：wxapp_id']);
-        }
-        return $wxapp_id;
+//        if (!$wxapp_id = $this->request->param('wxapp_id')) {
+//            throw new BaseException(['msg' => '缺少必要的参数：wxapp_id']);
+//        }
+//        return $wxapp_id;
     }
 
     /**
@@ -50,13 +50,13 @@ class Controller extends ThinkController
      */
     protected function getUser()
     {
-        if (!$token = $this->request->param('token')) {
-            throw new BaseException(['code' => -1, 'msg' => '缺少必要的参数：token']);
-        }
-        if (!$user = UserModel::getUser($token)) {
-            throw new BaseException(['code' => -1, 'msg' => '没有找到用户信息']);
-        }
-        return $user;
+//        if (!$token = $this->request->param('token')) {
+//            throw new BaseException(['code' => -1, 'msg' => '缺少必要的参数：token']);
+//        }
+//        if (!$user = UserModel::getUser($token)) {
+//            throw new BaseException(['code' => -1, 'msg' => '没有找到用户信息']);
+//        }
+//        return $user;
     }
 
     /**
@@ -101,6 +101,16 @@ class Controller extends ThinkController
     protected function postData($key)
     {
         return $this->request->post($key . '/a');
+    }
+
+    public function return_msg($code,$msg='',$datas=''){
+
+        $data['code'] = $code;
+        $data['msg'] = $msg;
+        $data['data'] = $datas;
+
+        echo json_encode($data);
+        die;
     }
 
 }

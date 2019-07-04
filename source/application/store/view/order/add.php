@@ -64,7 +64,7 @@
                                     </select>
                                 </div>
                                 <input type="hidden" name="goods_id" id="goods_id" value="">
-                                <input type="hidden" name="parts_id" id="parts_id" value="">
+<!--                                <input type="hidden" name="parts_id" id="parts_id" value="">-->
                             </div>
 
                             <div class="iteminfo_buying" style="display: none">
@@ -133,6 +133,27 @@
                                            required>
                                 </div>
                             </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">销售登记时间 </label>
+                                <div class="am-u-sm-3 am-u-end">
+                                    <input type="date" class="tpl-form-input" name="sale_time"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">质保开始时间 </label>
+                                <div class="am-u-sm-3 am-u-end">
+                                    <input type="date" class="tpl-form-input" name="guarantee_start_time"
+                                           required>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">质保到期时间 </label>
+                                <div class="am-u-sm-3 am-u-end">
+                                    <input type="date" class="tpl-form-input" name="guarantee_end_time"
+                                           required>
+                                </div>
+                            </div>
 
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">延保服务 </label>
@@ -141,7 +162,7 @@
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
                                         <option value=""></option>
                                         <?php if (isset($guarantee)): foreach($guarantee as $item): ?>
-                                            <option value="<?= $item['id']?>"><?= $item['term']?>（<?= $item['price']?>）</option>
+                                            <option value="<?= $item['id']?>-<?=$item['price']?>"><?= $item['term']?>（<?= $item['price']?>）</option>
 
 
                                         <?php endforeach; endif;?>
@@ -386,7 +407,7 @@
             // $(this).addClass("selected").siblings("li").removeClass("selected");
             $(this).addClass("selected");
 
-            id = $('#parts_id').val();
+            id = $('#goods_id').val();
 
             goods_id = $(this).attr('data-id');
 
@@ -395,8 +416,8 @@
 
             }
 
-            $('#parts_id').attr('value',goods_id);
-            console.log($('#parts_id').val());
+            $('#goods_id').attr('value',goods_id);
+            console.log($('#goods_id').val());
 
             i.attr("data-attrval",$(this).attr("data-aid"))
 
