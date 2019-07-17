@@ -16,6 +16,23 @@
                                 </div>
                             </div>
                             <div class="am-form-group">
+                                <label class="am-u-sm-3 am-form-label form-require">角色 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="rid" required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
+
+                                        <?php if (isset($role)): foreach($role as $item): ?>
+                                            <option value="<?= $item['id']?>?>"><?= $item['name']?></option>
+
+                                        <?php endforeach; endif;?>
+
+                                    </select>
+                                    <small class="am-margin-left-xs">
+                                        <a href="<?= url('role/add') ?>">去添加</a>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="am-form-group">
                                 <label class="am-u-sm-3 am-form-label form-require"> 登录密码 </label>
                                 <div class="am-u-sm-9">
                                     <input type="password" class="tpl-form-input" name="password"

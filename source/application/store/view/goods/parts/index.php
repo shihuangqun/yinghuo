@@ -33,7 +33,7 @@
                             <?php if (!empty($list)): foreach ($list as $first): ?>
                                 <tr>
                                     <td class="am-text-middle"><?= $first['category_id'] ?></td>
-                                    <td class="am-text-middle"><?= $first['name'] ?></td>
+                                    <td class="am-text-middle"><?= $first['name'] ?>（<?= $first['product_name']['name']?>）</td>
                                     <td class="am-text-middle"><?= $first['sort'] ?></td>
                                     <td class="am-text-middle"><?= date('Y-m-d H:i:s',$first['create_time']) ?></td>
                                     <td class="am-text-middle">
@@ -49,44 +49,47 @@
                                         </div>
                                     </td>
                                 </tr>
-                                <?php if (isset($first['child'])): foreach ($first['child'] as $two): ?>
+                                <?php if (!empty($first['sub'])): foreach ($first['sub'] as $two): ?>
                                     <tr>
                                         <td class="am-text-middle"><?= $two['category_id'] ?></td>
                                         <td class="am-text-middle">　-- <?= $two['name'] ?></td>
                                         <td class="am-text-middle"><?= $two['sort'] ?></td>
-                                        <td class="am-text-middle"><?= $two['create_time'] ?></td>
+                                        <td class="am-text-middle"><?= date('Y-m-d H:i:s',$two['create_time']) ?></td>
                                         <td class="am-text-middle">
                                             <div class="tpl-table-black-operation">
                                                 <a href="<?= url('goods.category/edit',
                                                     ['category_id' => $two['category_id']]) ?>">
                                                     <i class="am-icon-pencil"></i> 编辑
                                                 </a>
-                                                <a href="javascript:;" class="item-delete tpl-table-black-operation-del"
-                                                   data-id="<?= $two['category_id'] ?>">
+                                                <a href="<?=url('goods.parts/del',['category_id'=>$two['category_id']])?>" class="item-delete tpl-table-black-operation-del"
+                                                   data-id="">
                                                     <i class="am-icon-trash"></i> 删除
                                                 </a>
                                             </div>
                                         </td>
                                     </tr>
-                                    <?php if (isset($two['child'])): foreach ($two['child'] as $three): ?>
-                                        <tr>
-                                            <td class="am-text-middle"><?= $three['category_id'] ?></td>
-                                            <td class="am-text-middle">　　　-- <?= $three['name'] ?></td>
-                                            <td class="am-text-middle"><?= $three['create_time'] ?></td>
-                                            <td class="am-text-middle">
-                                                <div class="tpl-table-black-operation">
-                                                    <a href="<?= url('goods.parts/edit',
-                                                        ['category_id' => $three['category_id']]) ?>">
-                                                        <i class="am-icon-pencil"></i> 编辑
-                                                    </a>
-                                                    <a href="javascript:;" class="item-delete tpl-table-black-operation-del"
-                                                       data-id="<?= $three['category_id'] ?>">
-                                                        <i class="am-icon-trash"></i> 删除
-                                                    </a>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    <?php endforeach; endif; ?>
+
+                                <?php endforeach; endif; ?>
+                                <?php if (!empty($two['sub'])): foreach ($two['sub'] as $three): ?>
+                                    <tr>
+                                        <td class="am-text-middle"><?= $three['category_id'] ?></td>
+                                        <td class="am-text-middle">　---- <?= $three['name'] ?></td>
+                                        <td class="am-text-middle"><?= $three['sort'] ?></td>
+                                        <td class="am-text-middle"><?= date('Y-m-d H:i:s',$two['create_time']) ?></td>
+                                        <td class="am-text-middle">
+                                            <div class="tpl-table-black-operation">
+                                                <a href="<?= url('goods.category/edit',
+                                                    ['category_id' => $three['category_id']]) ?>">
+                                                    <i class="am-icon-pencil"></i> 编辑
+                                                </a>
+                                                <a href="<?=url('goods.parts/del',['category_id'=>$three['category_id']])?>" class="item-delete tpl-table-black-operation-del"
+                                                   data-id="">
+                                                    <i class="am-icon-trash"></i> 删除
+                                                </a>
+                                            </div>
+                                        </td>
+                                    </tr>
+
                                 <?php endforeach; endif; ?>
                             <?php endforeach; else: ?>
                                 <tr>

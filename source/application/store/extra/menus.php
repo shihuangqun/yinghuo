@@ -36,15 +36,15 @@ return [
                     'goods.category/edit',
                 ],
             ],
-//            [
-//                'name' => '配件分类',
-//                'index' => 'goods.parts/index',
-//                'uris' => [
-//                    'goods.parts/index',
-//                    'goods.parts/add',
-//                    'goods.parts/edit',
-//                ],
-//            ]
+            [
+                'name' => '问题分类',
+                'index' => 'goods.parts/index',
+                'uris' => [
+                    'goods.parts/index',
+                    'goods.parts/add',
+                    'goods.parts/edit',
+                ],
+            ]
         ],
     ],
     'order' => [
@@ -88,6 +88,23 @@ return [
         'name' => '管理员管理',
         'icon' => 'icon-user',
         'index' => 'admin/index',
+        'submenu' => [
+            [
+                'name' => '管理员列表',
+                'index' => 'admin/index',
+            ],
+            [
+                'name' => '角色管理',
+                'index' => 'role/index',
+            ],
+
+
+        ]
+    ],
+    'distributor' => [
+        'name' => '经销商管理',
+        'icon' => 'icon-user',
+        'index' => 'distributor/index',
     ],
 //    'marketing' => [
 //        'name' => '营销管理',
@@ -152,9 +169,14 @@ return [
         'index' => 'finance/index'
     ],
     'file' => [
-        'name' => '文件管理',
+        'name' => '使用手册',
         'icon' => '',
         'index' => 'file/index'
+    ],
+    'matter' => [
+        'name' => '常见问题',
+        'icon' => '',
+        'index' => 'matter/index'
     ],
     'plugins' => [
         'name' => '应用中心',

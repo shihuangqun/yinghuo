@@ -78,4 +78,37 @@ class Goods extends Controller
         return $this->return_msg(200,'success',$data);
     }
 
+    public function getThisManual(){
+        $goods_id = input('goods_id');
+
+        $info = Db::name('file')->where('goods_id',$goods_id)->find();
+
+        if(!$info){
+            return $this->return_msg(200,'null');
+        }
+        return $this->return_msg(200,'成功',$info);
+    }
+
+    public function getThisMatter(){
+
+        $goods_id = input('goods_id');
+
+        $info = Db::name('order_goods')
+            ->alias('o')
+            ->where('o.goods_id',$goods_id)
+            ->join('goods g','g.goods_id = o.goods_id')
+            ->join('category c','c.category_id = g.category_id')
+            ->field('c.category_id as category_id')
+            ->find();
+
+        $data = Db::name('category_parts')
+            ->alias('cp')
+            ->where('cp.product_cateid',$info['category_id'])
+            ->join('matter m','m.cate_id = cp.category_id')
+            ->field('m.*')
+            ->select();
+
+        return $this->return_msg(200,'成功',$data);
+    }
+
 }

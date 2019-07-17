@@ -68,7 +68,16 @@
                                     </div>
                                 </div>
                             </div>
-
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">商品分红比例</div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">分红比例(%) </label>
+                                <div class="am-u-sm-3 am-u-end">
+                                    <input type="number" class="tpl-form-input" name="goods[bonus_ratio]" value="<?= $model['bonus_ratio'] ?>"
+                                           required>
+                                </div>
+                            </div>
                             <div class="widget-head am-cf">
                                 <div class="widget-title am-fl">规格/库存</div>
                             </div>

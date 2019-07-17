@@ -1,60 +1,60 @@
 <link rel="stylesheet" href="assets/store/css/goods.css">
 <link rel="stylesheet" href="assets/store/plugins/umeditor/themes/default/css/umeditor.css">
-
-
 <div class="row-content am-cf">
     <div class="row">
         <div class="am-u-sm-12 am-u-md-12 am-u-lg-12">
             <div class="widget am-cf">
-                <form id="my-form" class="am-form tpl-form-line-form" method="post">
+                <form id="my-form" class="am-form tpl-form-line-form">
                     <div class="widget-body">
                         <fieldset>
                             <div class="widget-head am-cf">
                                 <div class="widget-title am-fl">基本信息</div>
                             </div>
-                            <!--                            <div class="am-form-group">-->
-                            <!--                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">商品名称 </label>-->
-                            <!--                                <div class="am-u-sm-9 am-u-end">-->
-                            <!--                                    <input type="text" class="tpl-form-input" name="goods[goods_name]"-->
-                            <!--                                           value="" required>-->
-                            <!--                                </div>-->
-                            <!--                            </div>-->
+<!--                            <div class="am-form-group">-->
+<!--                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">所属产品 </label>-->
+<!--                                <div class="am-u-sm-9 am-u-end">-->
+<!--                                    <select name="product_cateid"-->
+<!--                                            data-am-selected="{searchBox: 1, btnSize: 'sm'}">-->
+<!--                                        --><?php //if (isset($cate)): foreach ($cate as $ca): ?>
+<!--                                            <option value="--><?//= $ca['category_id'] ?><!--"-->
+<!--                                                --><?//= $ca['category_id'] == $edit['product_cateid'] ? 'selected' : '' ?><!-->-->
+<!--                                                --><?//= $ca['name'] ?><!--</option>-->
+<!--                                        --><?php //endforeach; endif; ?>
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                            </div>-->
+<!--                            <input type="hidden" name="category_id" value="--><?//= $edit['category_id']?><!--">-->
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">标题 </label>
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">上级分类 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input type="text" class="tpl-form-input" name="title"
-                                           value="" required>
-                                </div>
-                            </div>
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">关联商品 </label>
-                                <div class="am-u-sm-9 am-u-end">
-                                    <select name="goods_id" required
-                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择需要关联的商品'}">
-                                        <option value=""></option>
-                                        <?php if (isset($cate)): foreach($cate as $item): ?>
-                                            <option value="<?= $item['name']?>"><?= $item['name']?></option>
-                                            <?php if (!empty($item['sub'])): foreach($item['sub'] as $it): ?>
-                                                <option value="<?= $it['goods_id']?>">
-                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<?= $it['goods_name']?></option>
-                                            <?php endforeach; endif;?>
-
-                                        <?php endforeach; endif;?>
-
+                                    <select name="cate_id"
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm'}">
+                                        <option value="0">顶级分类</option>
+                                        <?php if (isset($list)): foreach ($list as $first): ?>
+                                            <option value="<?= $first['category_id'] ?>"
+                                                <?= $edit['cate_id'] == $first['category_id'] ? 'selected' : '' ?>>
+                                                <?= $first['name'] ?></option>
+                                        <?php endforeach; endif; ?>
                                     </select>
                                 </div>
                             </div>
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">文件 </label>
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">问题标题 </label>
                                 <div class="am-u-sm-9 am-u-end">
-                                    <input type="file" name="file" required>
+                                    <input type="text" class="tpl-form-input" name="title"
+                                           value="<?= $edit['title']?>" required>
                                 </div>
                             </div>
 
 
-
-
-
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label">问题回复 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <!-- 加载编辑器的容器 -->
+                                    <textarea id="container" name="reply" type="text/plain" ><?= $edit['title']?></textarea>
+                                </div>
+                            </div>
+                            <input type="hidden" name="id" value="<?= $edit['id']?>">
 
                             <div class="am-form-group">
                                 <div class="am-u-sm-9 am-u-sm-push-3 am-margin-top-lg">
@@ -88,7 +88,7 @@
 
         // 富文本编辑器
         UM.getEditor('container');
-        //
+
         // 选择图片
         $('.upload-file').selectImages({
             name: 'goods[images][]'
@@ -146,37 +146,23 @@
             }
         });
 
-
     });
     function btn(){
 
-        var form = document.getElementById('my-form');
-        var formData = new FormData(form);
-        // console.log($('#my-form').serialize());
         $.ajax({
-            type: 'post',
-            data: formData,
-            dataType: 'json',
-            processData:false,
-            contentType: false,
-            url: '<?= url('file/doadd')?>',
+            type:'post',
+            data:$('#my-form').serialize(),
+            url:"<?=url('matter/edit')?>",
+            dataType:'json',
             success: function(data){
-                console.log(data);
                 if(data.code == 200){
-                    layer.msg(data.msg,{icon:1});
-                    setTimeout(function(){
-                        location.href = '<?= url('file/index')?>';
-                    },1500)
-                }else{
-                    layer.msg(data.msg,{icon:5});
+                    // layer.msg('添加成功',{icon:1});
+                    location.href = '<?=url('matter/index')?>';
                 }
             },
             error: function(){
                 alert('错误');
             }
         })
-
     }
-
-
 </script>

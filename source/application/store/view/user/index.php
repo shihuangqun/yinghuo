@@ -11,6 +11,7 @@
                          tpl-table-black am-text-nowrap">
                             <thead>
                             <tr>
+                                <th>所属上级</th>
                                 <th>用户ID</th>
                                 <th>微信头像</th>
                                 <th>微信昵称</th>
@@ -22,8 +23,10 @@
                             </tr>
                             </thead>
                             <tbody>
-                            <?php if (!$list->isEmpty()): foreach ($list as $item): ?>
+                            <?php if (!$list->isEmpty()): foreach ($list as $k =>$item): ?>
+
                                 <tr>
+                                    <td class="am-text-middle"><?= $name[$k]?:'--' ?></td>
                                     <td class="am-text-middle"><?= $item['user_id'] ?></td>
                                     <td class="am-text-middle">
                                         <a href="<?= $item['avatarUrl'] ?>" title="点击查看大图" target="_blank">
@@ -35,8 +38,9 @@
                                     <td class="am-text-middle"><?= $item['country'] ?: '--' ?></td>
                                     <td class="am-text-middle"><?= $item['province'] ?: '--' ?></td>
                                     <td class="am-text-middle"><?= $item['city'] ?: '--' ?></td>
-                                    <td class="am-text-middle"><?= $item['create_time'] ?></td>
+                                    <td class="am-text-middle"><?= date('Y-m-d H:i:s',$item['create_time']) ?></td>
                                 </tr>
+
                             <?php endforeach; else: ?>
                                 <tr>
                                     <td colspan="8" class="am-text-center">暂无记录</td>

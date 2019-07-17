@@ -6,33 +6,16 @@
                     <div class="widget-body">
                         <fieldset>
                             <div class="widget-head am-cf">
-                                <div class="widget-title am-fl">管理员设置</div>
+                                <div class="widget-title am-fl">经销商设置</div>
                             </div>
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-form-label form-require"> 用户名 </label>
                                 <div class="am-u-sm-9">
-                                    <input type="text" class="tpl-form-input" name="user_name"
-                                           value="<?=$edit['user_name']?>" required>
+                                    <input type="text" class="tpl-form-input" name="name"
+                                           value="<?=$edit['name']?>" required>
                                 </div>
                             </div>
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-form-label form-require">角色 </label>
-                                <div class="am-u-sm-9 am-u-end">
-                                    <select name="rid" required
-                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
-
-                                        <?php if (isset($role)): foreach($role as $item): ?>
-                                            <option value="<?= $item['id']?>?>" <?php if($item['id'] == $edit['rid']):?>selected<?php endif?>><?= $item['name']?></option>
-
-                                        <?php endforeach; endif;?>
-
-                                    </select>
-                                    <small class="am-margin-left-xs">
-                                        <a href="<?= url('role/add') ?>">去添加</a>
-                                    </small>
-                                </div>
-                            </div>
-                            <input type="hidden" name="store_user_id" value="<?=$edit['store_user_id']?>">
+                            <input type="hidden" name="id" value="<?=$edit['id']?>">
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-form-label form-require"> 登录密码 </label>
                                 <div class="am-u-sm-9">
@@ -75,13 +58,13 @@
             type:'post',
             data:$('#my-form').serialize(),
             dataType:'json',
-            url:'<?=url('admin/edit')?>',
+            url:'<?=url('distributor/edit')?>',
             success: function(data){
                 if(data.code == 200){
                     layer.msg(data.msg,{icon:1})
 
                     setTimeout(function(){
-                        location.href = '<?=url('admin/index')?>';
+                        location.href = '<?=url('distributor/index')?>';
                     },1500)
                 }else{
                     layer.msg(data.msg,{icon:5})

@@ -37,7 +37,7 @@
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择主产品'}" id="goods">
                                         <option value=""></option>
                                         <?php if (isset($cate)): foreach($cate as $item): ?>
-                                        <option value="<?= $item['name']?>" disabled="disabled">
+                                        <option value="<?= $item['category_id']?>" >
                                             <?= $item['name']?></option>
                                         <?php if (!empty($item['sub'])): foreach($item['sub'] as $it): ?>
                                             <option value="<?= $it['category_id']?>">
@@ -52,7 +52,7 @@
                                             data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择配件'}" id="parts">
                                         <option value=""></option>
                                         <?php if (isset($cates)): foreach($cates as $item): ?>
-                                            <option value="<?= $item['name']?>" disabled="disabled">
+                                            <option value="<?= $item['category_id']?>" >
                                                 <?= $item['name']?></option>
                                             <?php if (!empty($item['sub'])): foreach($item['sub'] as $it): ?>
                                                 <option value="<?= $it['category_id']?>">
@@ -170,6 +170,24 @@
                                     </select>
                                     <small class="am-margin-left-xs">
                                         <a href="<?= url('guarantee/add') ?>">去添加</a>
+                                    </small>
+                                </div>
+                            </div>
+                            <div class="widget-head am-cf">
+                                <div class="widget-title am-fl">客户等级</div>
+                            </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">客户等级 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="distributor_status" required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
+                                        <?php foreach($distributor as $dis):?>
+                                        <option value="<?= $dis['id']?>"><?= $dis['name']?>（<?= $dis['adds']?:'--'?>）</option>
+                                        <?php endforeach;?>
+
+                                    </select>
+                                    <small class="am-margin-left-xs">
+                                        <a href="<?= url('distributor/add   ') ?>">去添加</a>
                                     </small>
                                 </div>
                             </div>
@@ -317,7 +335,7 @@
     }
     $('#goods').change(function(){
         id = $('#goods option:selected') .val();//选中的值
-        // console.log(select);
+        console.log(id);
 
         $.ajax({
             type:'post',

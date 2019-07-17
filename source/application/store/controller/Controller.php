@@ -3,10 +3,12 @@
 namespace app\store\controller;
 
 use think\Config;
+use think\Request;
 use think\Session;
 use think\Cookie;
 use app\store\model\Setting;
-
+use think\Db;
+use app\store\controller\Index;
 /**
  * 后台控制器基类
  * Class BaseController
@@ -54,7 +56,30 @@ class Controller extends \think\Controller
         $this->checkLogin();
         // 全局layout
         $this->layout();
+
     }
+
+    public function auth(){
+        $controller = Request::instance()->controller();
+        $auth = Db::name('auth_rule')->where('controller',$controller)->field('id')->find();
+
+        $user_id = $this->store['user']['store_user_id'];
+        $user = Db::name('store_user')
+            ->alias('s')
+            ->where('s.store_user_id',$user_id)
+            ->join('role r','r.id = s.rid')
+            ->field('r.rid')
+            ->find();
+
+        $arr = explode(',',$user['rid']);
+
+        if(!in_array($auth['id'],$arr)){
+            $this->error('没有访问权限','store/index/index');
+        }
+
+    }
+
+
 
     /**
      * 全局layout模板输出

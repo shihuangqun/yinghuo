@@ -38,7 +38,10 @@ class User extends Controller
                 'goods_no|产品注册码' => 'require'
             ];
 
-            $validate = new Validate();
+            $user_id = input('user_id');
+
+
+            $validate = new Validate($rule);
 
             if(!$validate->check($res)){
                 return $this->return_msg(400,$validate->getError());
@@ -49,10 +52,26 @@ class User extends Controller
             if(!$info){
                 return $this->return_msg(400,'该产品注册码不存在，请核对后重新输入');
             }
+            if($info && $info['status'] ==1){
+                return $this->return_msg(400,'已被注册！');
+            }
 
-            $data = Db::name('order')->where('goods_no',$res['goods_no'])->update(['buy_time' => $res['buy_time']]);
+            $data = Db::name('order')->where('goods_no',$res['goods_no'])->update(['buy_time' => $res['buy_time'],'status' => 1]);
 
             if($data){
+
+                $info = Db::name('order')->where('goods_no',$res['goods_no'])->find();
+
+                if($info){
+
+                    try{
+                        Db::name('user')->where('user_id',$user_id)->update(['parent_id' => $info['distributor_id']]);
+                    }catch(\Exception $e){
+                        return $this->return_msg(200,'绑定失败');
+                    }
+
+                }
+
                 return $this->return_msg(200,'注册成功');
             }else{
                 return $this->return_msg(400,'error');

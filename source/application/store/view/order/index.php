@@ -41,9 +41,14 @@
                                     <td colspan="6"></td>
                                 </tr>
                                 <tr>
-                                    <td class="am-text-middle am-text-left" colspan="6">
+                                    <td class="am-text-middle am-text-left" colspan="4">
                                         <span class="am-margin-right-lg"> <?= $order['create_time'] ?></span>
                                         <span class="am-margin-right-lg">订单号：<?= $order['order_no'] ?></span>
+                                    </td>
+                                    <td colspan="2">
+                                        <p>客户等级：
+
+                                        </p>
                                     </td>
                                 </tr>
                                 <?php $i = 0;
@@ -67,6 +72,7 @@
                                         </td>
                                         <?php if ($i === 1) : $goodsCount = count($order['goods']); ?>
                                             <td class="am-text-middle" rowspan="<?= $goodsCount ?>">
+
                                                 <p>￥<?= $order['pay_price'] ?></p>
                                                 <p class="am-link-muted">(含运费：￥<?= $order['express_price'] ?>)</p>
                                             </td>

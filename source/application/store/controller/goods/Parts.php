@@ -19,20 +19,24 @@ class Parts extends Controller
      */
     public function index()
     {
-        $list = [];
-        $lists = Db::name('category_parts')->select();
-        $num = 1;
 
-        foreach($lists as $k => $v){
-            if($v['parent_id'] != 0){
-                $v['num'] = $num++;
-                $v['name'] = str_repeat('-- ',$v['num']).$v['name'];
+        $list = self::getCate(0);
 
-            }
-            $list[] = $v;
-        }
-//        dump($list);
+
         return $this->fetch('index', compact('list'));
+    }
+
+    public static function getCate($pid){
+        $cates = Db::name('category_parts')->where('parent_id',$pid)->select();
+
+        $cate = [];
+        foreach($cates as $k => $v){
+            $v['sub'] = self::getCate($v['category_id']);
+            $v['product_name'] = Db::name('category')->where('category_id',$v['product_cateid'])->field('name')->find();
+            $cate[] = $v;
+        }
+
+        return $cate;
     }
 
     /**
@@ -67,6 +71,8 @@ class Parts extends Controller
             }
             $list[] = $v;
         }
+
+        $cate = Db::name('category')->where('parent_id',0)->select();
         if(request()->isPost()){
             $res = Request::instance()->param();
             $res['create_time'] = time();
@@ -78,7 +84,7 @@ class Parts extends Controller
                 return $this->return_msg(400,'error');
             }
         }
-       return $this->fetch('add',compact('list'));
+       return $this->fetch('add',compact('list','cate'));
     }
 
     /**
@@ -100,7 +106,7 @@ class Parts extends Controller
             }
             $list[] = $v;
         }
-
+        $cate = Db::name('category')->where('parent_id',0)->select();
         $model = Db::name('category_parts')->find($id);
 
         if(request()->isPost()){
@@ -114,7 +120,7 @@ class Parts extends Controller
                 return $this->return_msg(400,'error');
             }
         }
-        return $this->fetch('edit',compact('model','list'));
+        return $this->fetch('edit',compact('model','list','cate'));
     }
 
     public function del(){

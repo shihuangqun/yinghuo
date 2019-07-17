@@ -15,6 +15,19 @@
                                            value="<?= $model['name'] ?>" required>
                                 </div>
                             </div>
+                            <div class="am-form-group">
+                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">所属产品 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="product_cateid"
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm'}">
+                                        <?php if (isset($cate)): foreach ($cate as $ca): ?>
+                                            <option value="<?= $ca['category_id'] ?>"
+                                                <?= $ca['category_id'] == $model['product_cateid'] ? 'selected' : '' ?>>
+                                                <?= $ca['name'] ?></option>
+                                        <?php endforeach; endif; ?>
+                                    </select>
+                                </div>
+                            </div>
                             <input type="hidden" name="category_id" value="<?= $model['category_id']?>">
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">上级分类 </label>
