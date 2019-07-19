@@ -39,6 +39,7 @@ class StoreUser extends StoreUserModel
             'user' => [
                 'store_user_id' => $user['store_user_id'],
                 'user_name' => $user['user_name'],
+                'rid' => $user['rid']
             ],
             'wxapp' => $user['wxapp']->toArray(),
             'is_login' => true,

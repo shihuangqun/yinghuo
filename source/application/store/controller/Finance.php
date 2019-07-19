@@ -18,6 +18,54 @@ Class Finance extends Controller{
         $this->auth();
     }
     public function index(){
+
+        if($this->store['user']['rid'] != 0){
+            $user_id = $this->store['user']['store_user_id'];
+
+            $info = Db::name('user')->where('parent_id',$user_id)->field('user_id')->select();
+
+            $arr = [];
+            foreach($info as $v){
+                $arr[] = $v['user_id'];
+
+            }
+            $str = implode(',',$arr);
+
+            $order = Db::name('order')
+                ->alias('o')
+                ->where('o.user_id',$str)
+                ->order('create_time desc')
+                ->join('order_goods og','og.order_id = o.order_id')
+                ->join('goods g','g.goods_id = og.goods_id')
+                ->join('goods_spec gs','gs.goods_id = g.goods_id')
+                ->join('goods_image img','img.goods_id = g.goods_id')
+                ->join('upload_file u','u.file_id = img.image_id')
+                ->join('user us','us.user_id = o.user_id')
+                ->field('gs.goods_price,g.bonus_ratio,og.total_num,o.order_no,g.goods_name,o.goods_no,o.pay_price,o.create_time,u.file_name,us.nickName,us.avatarUrl')
+                ->paginate('10',false,['query' => Request::instance()->request()]);
+
+            $arr = [];
+            foreach ($order as $o){
+                $arr[] = ($o['goods_price'] * $o['total_num']) * $o['bonus_ratio']/100;
+            }
+
+            $totalprice = 0;
+            foreach($arr as $a){
+                $totalprice += $a;
+
+            }
+
+            $balance = Db::name('store_user')->find($user_id);
+
+            $this->assign([
+                'list' => $order,
+                'bonus_price' => $arr,
+                'totalprice' => $totalprice,
+                'balance' => $balance
+            ]);
+
+            return $this->fetch('dis_index');
+        }
         $start_time = strtotime(input('start_time'));
         $end_time = strtotime(input('end_time'));
 
@@ -130,5 +178,42 @@ Class Finance extends Controller{
         return $this->fetch();
     }
 
+    public function presentation_money(){
+
+        $user_id = $this->store['user']['store_user_id'];
+
+        $user = Db::name('store_user')->find($user_id);
+
+        $money = input('money');
+
+        if($user['money'] < $money || $money <= 0){
+            return $this->return_msg(400,'余额不足，请输入正确金额');
+        }
+
+
+
+        Db::startTrans();
+
+        try{
+            $save = Db::name('store_user')->where('store_user_id',$user_id)->update(['money' => $user['money'] - $money]);
+
+            if($save){
+                $res['price'] = $money;
+                $res['user_id'] = $user_id;
+                $res['addtime'] = time();
+                $data = Db::name('presentation')->insert($res);
+            }
+
+            Db::commit();
+        }catch(\Exception $e){
+            Db::rollback();
+            return $this->return_msg('400','请求异常');
+        }
+
+        if($data){
+            return $this->return_msg(200,'申请提现成功');
+        }
+
+    }
 
 }

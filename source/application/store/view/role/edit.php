@@ -9,17 +9,20 @@
                                 <div class="widget-title am-fl">管理员设置</div>
                             </div>
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-form-label form-require"> 角色名 </label>
-                                <div class="am-u-sm-9">
-                                    <input type="text" class="tpl-form-input" name="name"
-                                           value="<?= $edit['name']?>" required>
+                                <label class="am-u-sm-3 am-form-label form-require"> 角色管理 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="name" required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
+                                        <option value="0" <?php if($edit['name'] == '0'):?>selected<?php endif?>>超级管理员</option>
+                                        <option value="1" <?php if($edit['name'] == '1'):?>selected<?php endif?>>经销商用户</option>
+                                    </select>
                                 </div>
                             </div>
                             <div class="am-form-group">
                                 <label class="am-u-sm-3 am-form-label form-require"> 权限设置 </label>
                                 <div class="am-u-sm-9 rids">
                                     <?php foreach($rule as $ro):?>
-                                        <label><input type="checkbox" value="<?= $ro['id']?>" id="rids" <?php if(in_array($ro['id'],$rid)):?>checked<?php endif?>><?= $ro['name']?></label>
+                                        <label><input type="checkbox" value="<?= $ro['id']?>" name="check" id="rids" <?php if(in_array($ro['id'],$rid)):?>checked<?php endif?>><?= $ro['name']?></label>
                                         <br>
 
 
@@ -52,14 +55,23 @@
         $('#my-form').superForm();
 
     });
-    $('.rids').on('click','#rids',function(){
-        var oldval = $('#arr').val();
-        var rid = $(this).val();
-        var arr = oldval+','+rid;
-        $('#arr').attr('value',arr);
-        console.log(arr)
-    });
+    // $('.rids').on('click','#rids',function(){
+    //     var oldval = $('#arr').val();
+    //     var rid = $(this).val();
+    //     var arr = oldval+','+rid;
+    //     $('#arr').attr('value',arr);
+    //     console.log(arr)
+    // });
     function btn(){
+        var number = document.getElementsByName('check');
+        arr = [];
+        for(i=0;i<number.length;i++){
+            if(number[i].checked){
+                arr.push(number[i].value);
+            }
+        }
+
+        $('#arr').attr('value',arr);
         $.ajax({
             type:'post',
             data:$('#my-form').serialize(),
@@ -75,6 +87,9 @@
                 }else{
                     layer.msg(data.msg,{icon:5})
                 }
+            },
+            error: function(){
+                alert('错误');
             }
         })
     }

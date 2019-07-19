@@ -27,7 +27,12 @@
                             <?php if (!$list->isEmpty()): foreach ($list as $item): ?>
                                 <tr>
                                     <td class="am-text-middle"><?= $item['id'] ?></td>
-                                    <td class="am-text-middle"><?= $item['name'] ?: '--' ?></td>
+                                    <td class="am-text-middle">
+                                        <?php if($item['name'] == 0):?>
+                                            超级管理员
+                                        <?php else:?>
+                                            经销商用户<?php endif?>
+                                    </td>
 
                                     <td class="am-text-middle">
                                         <div class="tpl-table-black-operation">
@@ -35,10 +40,10 @@
                                                 ['id' => $item['id']]) ?>">
                                                 <i class="am-icon-pencil"></i> 编辑
                                             </a>
-                                            <a href="<?=url('role/del',['id'=>$item['id']])?>" class="item-delete tpl-table-black-operation-del"
-                                               data-id="">
-                                                <i class="am-icon-trash"></i> 删除
-                                            </a>
+<!--                                            <a href="" class="item-delete tpl-table-black-operation-del"-->
+<!--                                               data-id="">-->
+<!--                                                <i class="am-icon-trash"></i> 删除-->
+<!--                                            </a>-->
                                         </div>
                                     </td>
                                 </tr>

@@ -101,10 +101,15 @@ return [
 
         ]
     ],
-    'distributor' => [
-        'name' => '经销商管理',
+//    'distributor' => [
+//        'name' => '经销商管理',
+//        'icon' => 'icon-user',
+//        'index' => 'distributor/index',
+//    ],
+    'presetation' => [
+        'name' => '提现管理',
         'icon' => 'icon-user',
-        'index' => 'distributor/index',
+        'index' => 'presentation/index',
     ],
 //    'marketing' => [
 //        'name' => '营销管理',

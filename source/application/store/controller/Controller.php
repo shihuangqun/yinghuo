@@ -67,12 +67,12 @@ class Controller extends \think\Controller
         $user = Db::name('store_user')
             ->alias('s')
             ->where('s.store_user_id',$user_id)
-            ->join('role r','r.id = s.rid')
+            ->join('role r','r.name = s.rid')
             ->field('r.rid')
             ->find();
 
         $arr = explode(',',$user['rid']);
-
+//        dump($user_id);
         if(!in_array($auth['id'],$arr)){
             $this->error('没有访问权限','store/index/index');
         }

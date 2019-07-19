@@ -192,14 +192,18 @@ class Order extends Controller
 //        }
 //        dump($cate);
 
-        $distributor = Db::name('distributor')->select();
+        $distributor = Db::name('store_user')->where('rid',1)->select();
         $guarantee = Db::name('guarantee')->select();
+
+        $rid = $this->store['user']['rid'];
+
 
         $this->assign([
             'cate' => $cate,
             'cates' => $cates,
             'guarantee' => $guarantee,
-            'distributor' => $distributor
+            'distributor' => $distributor,
+            'rid' => $rid
         ]);
         return $this->fetch();
     }
@@ -219,7 +223,7 @@ class Order extends Controller
             $res['pay_price'] = input('pay_price')+$str[1];
             $res['total_price'] = $res['pay_price'];
             $res['goods_no'] = input('goods_no');
-            $res['distributor_status'] = input('distributor_status');
+            $res['distributor_id'] = input('distributor_status');
             $res['create_time'] = time();
 //            dump($res);exit;
             $order_id = Db::name('order')->insertGetId($res);
@@ -230,6 +234,7 @@ class Order extends Controller
                 $str = explode(',',$goods_id);
 
                 Db::startTrans();
+                $money = [];
                 try{
                     foreach($str as $v){
                         $res_goods['goods_id'] = $v;
@@ -245,7 +250,7 @@ class Order extends Controller
                         $res_goods['image_id'] = $image['image_id'];
                         $res_goods['order_id'] = $order_id;
                         $res_goods['create_time'] = time();
-
+                        $money[] = $res_goods;
                         $order_goods = Db::name('order_goods')->insert($res_goods);
 
                     }
@@ -267,8 +272,28 @@ class Order extends Controller
                     Db::rollback();
                 }
 
-                if($order_goods && $address){
 
+                if($order_goods && $address){
+                    $arr = [];
+                    foreach($money as $m){
+                        $m['bonus_ratio'] = Db::name('goods')
+                            ->alias('g')
+                            ->where('g.goods_id',$v)
+                            ->join('goods_spec gs','gs.goods_id = g.goods_id')
+                            ->field('g.bonus_ratio,gs.goods_price')
+                            ->find();
+
+                        $arr[] = ($m['bonus_ratio']['goods_price'] * $m['total_num']) * $m['bonus_ratio']['bonus_ratio']/100;
+                    }
+                    $totalprice = 0;
+                    foreach($arr as $a){
+                        $totalprice += $a;
+                    }
+
+                    $user_info = Db::name('store_user')->where('store_user_id',$res['distributor_id'])->field('money')->find();
+                    if($user_info){
+                        $save_money = Db::name('store_user')->where('store_user_id',$res['distributor_id'])->update(['money' => $user_info['money'] + $totalprice]);
+                    }
                     return $this->return_msg(200,'添加订单成功');
                 }else{
 

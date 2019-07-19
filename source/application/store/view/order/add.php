@@ -173,24 +173,27 @@
                                     </small>
                                 </div>
                             </div>
-                            <div class="widget-head am-cf">
-                                <div class="widget-title am-fl">客户等级</div>
-                            </div>
-                            <div class="am-form-group">
-                                <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">客户等级 </label>
-                                <div class="am-u-sm-9 am-u-end">
-                                    <select name="distributor_status" required
-                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
-                                        <?php foreach($distributor as $dis):?>
-                                        <option value="<?= $dis['id']?>"><?= $dis['name']?>（<?= $dis['adds']?:'--'?>）</option>
-                                        <?php endforeach;?>
 
-                                    </select>
-                                    <small class="am-margin-left-xs">
-                                        <a href="<?= url('distributor/add   ') ?>">去添加</a>
-                                    </small>
+                            <?php if($rid == 0):?>
+                                <div class="widget-head am-cf">
+                                    <div class="widget-title am-fl">客户等级</div>
                                 </div>
-                            </div>
+                                <div class="am-form-group">
+                                    <label class="am-u-sm-3 am-u-lg-2 am-form-label form-require">所属经销商 </label>
+                                    <div class="am-u-sm-9 am-u-end">
+                                        <select name="distributor_status" required
+                                                data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
+                                            <?php foreach($distributor as $dis):?>
+                                                <option value="<?= $dis['store_user_id']?>"><?= $dis['user_name']?>（<?= $dis['adds']?:'--'?>）</option>
+                                            <?php endforeach;?>
+
+                                        </select>
+                                        <small class="am-margin-left-xs">
+                                            <a href="<?= url('distributor/add   ') ?>">去添加</a>
+                                        </small>
+                                    </div>
+                                </div>
+                            <?php endif?>
                             <div class="widget-head am-cf">
                                 <div class="widget-title am-fl">收货信息</div>
                             </div>

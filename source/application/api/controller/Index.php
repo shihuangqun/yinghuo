@@ -4,7 +4,7 @@ namespace app\api\controller;
 
 use app\api\model\WxappPage;
 use app\api\model\Goods as GoodsModel;
-
+use think\Db;
 /**
  * 首页控制器
  * Class Index
@@ -28,5 +28,13 @@ class Index extends Controller
         // 猜您喜欢
         $best = $model->getBestList();
         return $this->renderSuccess(compact('items', 'newest', 'best'));
+    }
+
+    public function getTel(){
+
+        $str = Db::name('setting')->where('key','store')->find();
+        $arr = json_decode($str['values']);
+
+        return $this->return_msg(200,'成功',$arr->tel);
     }
 }

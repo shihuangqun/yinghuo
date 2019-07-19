@@ -9,10 +9,14 @@
                                 <div class="widget-title am-fl">管理员设置</div>
                             </div>
                             <div class="am-form-group">
-                                <label class="am-u-sm-3 am-form-label form-require"> 角色名 </label>
-                                <div class="am-u-sm-9">
-                                    <input type="text" class="tpl-form-input" name="name"
-                                           value="" required>
+                                <label class="am-u-sm-3 am-form-label form-require">角色管理 </label>
+                                <div class="am-u-sm-9 am-u-end">
+                                    <select name="name" required
+                                            data-am-selected="{searchBox: 1, btnSize: 'sm',  placeholder:'请选择延保服务'}">
+                                        <option value="0">超级管理员</option>
+                                        <option value="1">经销商用户</option>
+                                    </select>
+
                                 </div>
                             </div>
                             <div class="am-form-group">

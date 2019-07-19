@@ -92,4 +92,29 @@ Class Admin extends Controller{
             return $this->index();
         }
     }
+    public function save_status(){
+
+        $id = input('store_user_id');
+
+        $info = Db::name('store_user')->find($id);
+
+        if($info['status'] == 0){
+            $data = Db::name('store_user')->where('store_user_id',$id)->update(['status' => 1]);
+
+            if($data){
+                $code = 200;
+                $msg = '更新成功';
+            }
+        }else if($info['status'] == 1){
+            $data = Db::name('store_user')->where('store_user_id',$id)->update(['status' => 0]);
+
+            if($data){
+                $code = 200;
+                $msg = '更新成功';
+            }
+
+        }
+
+        return $this->return_msg($code,$msg);
+    }
 }
